@@ -10,3 +10,7 @@ $ yarn start
 ```
 
 Now point your browser to http://localhost:3000/.
+
+Screenshot
+----------
+![Screenshot](assets/screen-shot.png)
