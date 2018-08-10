@@ -114,143 +114,128 @@ export const BookForm = inject('rootStore')(
                                     className={classes.root}
                                     onSubmit={handleSubmit}
                                 >
+                                    <Field
+                                        name="title"
+                                        component={TextField}
+                                        label="Title"
+                                        fullWidth
+                                    />
+                                    <Field
+                                        name="subtitle"
+                                        component={TextField}
+                                        label="Subtitle"
+                                        fullWidth
+                                    />
                                     <div>
                                         <Field
-                                            name="title"
-                                            component={TextField}
-                                            label="Title"
-                                            fullWidth
+                                            name="publisherId"
+                                            component={Select}
+                                            label="Publisher"
+                                            options={Array.from(
+                                                publisherMap.values()
+                                            )}
+                                            className={classes.selectStyle}
                                         />
                                         <Field
-                                            name="subtitle"
+                                            name="isPublished"
+                                            component={Checkbox}
+                                            label="Published"
+                                        />
+                                        <Condition when="isPublished" is={true}>
+                                            <Field
+                                                name="copiesPublished"
+                                                component={TextField}
+                                                label="Copies"
+                                                parse={value =>
+                                                    parseInt(value, 10)
+                                                }
+                                                className={classes.copies}
+                                            />
+                                        </Condition>
+                                    </div>
+                                    <div className={classes.eventExists}>
+                                        <Field
+                                            name="eventExists"
+                                            component={Checkbox}
+                                            label="Create event"
+                                        />
+                                    </div>
+                                    <Condition when="eventExists" is={true}>
+                                        <Typography variant="title">
+                                            Event
+                                        </Typography>
+                                        <Field
+                                            name="eventName"
                                             component={TextField}
-                                            label="Subtitle"
+                                            label="Name"
                                             fullWidth
                                         />
                                         <div>
                                             <Field
-                                                name="publisherId"
-                                                component={Select}
-                                                label="Publisher"
-                                                options={Array.from(
-                                                    publisherMap.values()
-                                                )}
-                                                className={classes.selectStyle}
-                                            />
-                                            <Field
-                                                name="isPublished"
-                                                component={Checkbox}
-                                                label="Published"
-                                            />
-                                            <Condition
-                                                when="isPublished"
-                                                is={true}
-                                            >
-                                                <Field
-                                                    name="copiesPublished"
-                                                    component={TextField}
-                                                    label="Copies"
-                                                    parse={value =>
-                                                        parseInt(value, 10)
-                                                    }
-                                                    className={classes.copies}
-                                                />
-                                            </Condition>
-                                        </div>
-                                        <div className={classes.eventExists}>
-                                            <Field
-                                                name="eventExists"
-                                                component={Checkbox}
-                                                label="Create event"
-                                            />
-                                        </div>
-                                        <Condition when="eventExists" is={true}>
-                                            <Typography variant="title">
-                                                Event
-                                            </Typography>
-                                            <Field
-                                                name="eventName"
+                                                name="eventCity"
                                                 component={TextField}
-                                                label="Name"
-                                                fullWidth
+                                                label="City"
+                                                className={classes.textInput}
                                             />
-                                            <div>
-                                                <Field
-                                                    name="eventCity"
-                                                    component={TextField}
-                                                    label="City"
-                                                    className={
-                                                        classes.textInput
-                                                    }
-                                                />
-                                                <Field
-                                                    name="eventTimezone"
-                                                    component={Tz}
-                                                    label="Time Zone"
-                                                    className={
-                                                        classes.textInput
-                                                    }
-                                                />
-                                                <Timezone
-                                                    name="timezone-raw"
-                                                    value={this.state.tzRaw}
-                                                    label="Time Zone Raw"
-                                                    onChange={value =>
-                                                        this.setState({
-                                                            tzRaw: value
-                                                        })
-                                                    }
-                                                />
-                                            </div>
-                                            <div>
-                                                <Field
-                                                    name="eventStartTime"
-                                                    component={TextField}
-                                                    label="Start Time"
-                                                    className={
-                                                        classes.eventStartTime
-                                                    }
-                                                />
-                                                <Field
-                                                    name="eventDatePart"
-                                                    component={TextField}
-                                                    label="Start Date"
-                                                    placeholder="YYYY-MM-DD"
-                                                    className={
-                                                        classes.textInput
-                                                    }
-                                                />
-                                                <Field
-                                                    name="eventTimePart"
-                                                    component={TextField}
-                                                    label="Time"
-                                                    placeholder="hh:mm AM"
-                                                    className={
-                                                        classes.textInput
-                                                    }
-                                                />
-                                                <Field
-                                                    name="eventDuration"
-                                                    component={TextField}
-                                                    label="Duration"
-                                                    placeholder="hh:mm"
-                                                    parse={value =>
-                                                        DateTimeUtils.durationStrToMillis(
-                                                            value
-                                                        )
-                                                    }
-                                                    format={value =>
-                                                        DateTimeUtils.millisToDurationStr(
-                                                            value
-                                                        )
-                                                    }
-                                                    className={
-                                                        classes.textInput
-                                                    }
-                                                />
-                                            </div>
-                                        </Condition>
-                                    </div>
+                                            <Field
+                                                name="eventTimezone"
+                                                component={Tz}
+                                                label="Time Zone"
+                                                className={classes.textInput}
+                                            />
+                                            <Timezone
+                                                name="timezone-raw"
+                                                value={this.state.tzRaw}
+                                                label="Time Zone Raw"
+                                                onChange={value =>
+                                                    this.setState({
+                                                        tzRaw: value
+                                                    })
+                                                }
+                                            />
+                                        </div>
+                                        <div>
+                                            <Field
+                                                name="eventStartTime"
+                                                component={TextField}
+                                                label="Start Time"
+                                                className={
+                                                    classes.eventStartTime
+                                                }
+                                            />
+                                            <Field
+                                                name="eventDatePart"
+                                                component={TextField}
+                                                label="Start Date"
+                                                placeholder="YYYY-MM-DD"
+                                                className={classes.textInput}
+                                            />
+                                            <Field
+                                                name="eventTimePart"
+                                                component={TextField}
+                                                label="Time"
+                                                placeholder="hh:mm AM"
+                                                className={classes.textInput}
+                                            />
+                                            <Field
+                                                name="eventDuration"
+                                                component={TextField}
+                                                label="Duration"
+                                                placeholder="hh:mm"
+                                                parse={value =>
+                                                    DateTimeUtils.durationStrToMillis(
+                                                        value
+                                                    )
+                                                }
+                                                format={value =>
+                                                    DateTimeUtils.millisToDurationStr(
+                                                        value
+                                                    )
+                                                }
+                                                className={classes.textInput}
+                                            />
+                                        </div>
+                                    </Condition>
 
                                     <div className={classes.buttonBar}>
                                         <Button
