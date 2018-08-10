@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { inject } from 'mobx-react';
 import { RouterView } from 'mobx-state-router';
-import { FinalFormPage, NotFoundPage } from './features';
+import { FinalFormPage, FormikPage, NotFoundPage } from './features';
 
 const styles = theme => ({
     '@global': {
@@ -43,6 +43,7 @@ const styles = theme => ({
 
 const viewMap = {
     finalForm: <FinalFormPage />,
+    formik: <FormikPage />,
     notFound: <NotFoundPage />
 };
 

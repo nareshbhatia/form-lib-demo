@@ -6,5 +6,6 @@
 //     /items/:id
 export const routes = [
     { name: 'finalForm', pattern: '/' },
+    { name: 'formik', pattern: '/formik' },
     { name: 'notFound', pattern: '/not-found' }
 ];
