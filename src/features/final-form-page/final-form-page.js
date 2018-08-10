@@ -27,10 +27,6 @@ export const FinalFormPage = inject('rootStore')(
     decorate(
         observer(
             class extends React.Component {
-                componentDidMount() {
-                    this.handleAddBook();
-                }
-
                 render() {
                     const { classes } = this.props;
 

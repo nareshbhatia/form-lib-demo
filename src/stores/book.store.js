@@ -15,6 +15,7 @@ export class BookStore {
 
     constructor(rootStore) {
         this.rootStore = rootStore;
+        this.editNewBook();
     }
 
     @action
