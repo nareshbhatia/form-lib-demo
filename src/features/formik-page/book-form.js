@@ -53,7 +53,8 @@ export const BookForm = inject('rootStore')(
                     const { publisherMap } = bookStore;
 
                     const validationSchema = yup.object().shape({
-                        title: yup.string().required()
+                        title: yup.string().required(),
+                        copiesPublished: yup.number().integer().positive()
                     });
 
                     return (
@@ -67,7 +68,7 @@ export const BookForm = inject('rootStore')(
                                 bookStore.selectBook(book);
                                 setSubmitting(false);
                             }}
-                            render={({ errors, touched, isSubmitting }) => (
+                            render={({ values, isSubmitting }) => (
                                 <Form className={classes.root}>
                                     <Field
                                         name="title"
@@ -96,6 +97,18 @@ export const BookForm = inject('rootStore')(
                                             component={Checkbox}
                                             label="Published"
                                         />
+                                        {
+                                            values.isPublished &&
+                                            <Field
+                                                name="copiesPublished"
+                                                component={TextInput}
+                                                label="Copies"
+                                                parse={value =>
+                                                    parseInt(value, 10)
+                                                }
+                                                className={classes.copies}
+                                            />
+                                        }
                                     </div>
 
                                     <div className={classes.buttonBar}>
