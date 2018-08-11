@@ -12,6 +12,7 @@ import Checkbox from './components/checkbox';
 import DurationInput from './components/duration-input';
 import Select from './components/select';
 import TextInput from './components/text-input';
+import TransformInput from './components/transform-input';
 import { Tz } from './components/tz';
 
 const styles = theme => ({
@@ -103,14 +104,22 @@ export const BookForm = inject('rootStore')(
                                             component={Checkbox}
                                             label="Published"
                                         />
-                                        {// TODO: Think of a better way to edit numbers.
-                                        // Here the generated value ends up being a string.
-                                        values.isPublished && (
+                                        {values.isPublished && (
                                             <Field
                                                 name="copiesPublished"
-                                                component={TextInput}
+                                                component={TransformInput}
                                                 label="Copies"
                                                 className={classes.copies}
+                                                parse={value =>
+                                                    value === ''
+                                                        ? null
+                                                        : Number(value)
+                                                }
+                                                format={value =>
+                                                    value == null
+                                                        ? ''
+                                                        : String(value)
+                                                }
                                             />
                                         )}
                                     </div>
