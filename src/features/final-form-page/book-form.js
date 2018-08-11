@@ -117,12 +117,14 @@ export const BookForm = inject('rootStore')(
                                     <Field
                                         name="title"
                                         component={TextField}
+                                        type="text"
                                         label="Title"
                                         fullWidth
                                     />
                                     <Field
                                         name="subtitle"
                                         component={TextField}
+                                        type="text"
                                         label="Subtitle"
                                         fullWidth
                                     />
@@ -136,15 +138,18 @@ export const BookForm = inject('rootStore')(
                                             )}
                                             className={classes.selectStyle}
                                         />
+                                        {/* Must mark type as "checkbox" to activate the checked property */}
                                         <Field
                                             name="isPublished"
                                             component={Checkbox}
+                                            type="checkbox"
                                             label="Published"
                                         />
                                         <Condition when="isPublished" is={true}>
                                             <Field
                                                 name="copiesPublished"
                                                 component={TextField}
+                                                type="text"
                                                 label="Copies"
                                                 parse={value =>
                                                     parseInt(value, 10)
@@ -157,6 +162,7 @@ export const BookForm = inject('rootStore')(
                                         <Field
                                             name="eventExists"
                                             component={Checkbox}
+                                            type="checkbox"
                                             label="Create event"
                                         />
                                     </div>
@@ -167,6 +173,7 @@ export const BookForm = inject('rootStore')(
                                         <Field
                                             name="eventName"
                                             component={TextField}
+                                            type="text"
                                             label="Name"
                                             fullWidth
                                         />
@@ -174,12 +181,14 @@ export const BookForm = inject('rootStore')(
                                             <Field
                                                 name="eventCity"
                                                 component={TextField}
+                                                type="text"
                                                 label="City"
                                                 className={classes.textInput}
                                             />
                                             <Field
                                                 name="eventTimezone"
                                                 component={Tz}
+                                                type="text"
                                                 label="Time Zone"
                                                 className={classes.textInput}
                                             />
@@ -198,6 +207,7 @@ export const BookForm = inject('rootStore')(
                                             <Field
                                                 name="eventStartTime"
                                                 component={TextField}
+                                                type="text"
                                                 label="Start Time"
                                                 className={
                                                     classes.eventStartTime
@@ -206,6 +216,7 @@ export const BookForm = inject('rootStore')(
                                             <Field
                                                 name="eventDatePart"
                                                 component={TextField}
+                                                type="text"
                                                 label="Start Date"
                                                 placeholder="YYYY-MM-DD"
                                                 className={classes.textInput}
@@ -213,6 +224,7 @@ export const BookForm = inject('rootStore')(
                                             <Field
                                                 name="eventTimePart"
                                                 component={TextField}
+                                                type="text"
                                                 label="Time"
                                                 placeholder="hh:mm AM"
                                                 className={classes.textInput}
@@ -220,6 +232,7 @@ export const BookForm = inject('rootStore')(
                                             <Field
                                                 name="eventDuration"
                                                 component={TextField}
+                                                type="text"
                                                 label="Duration"
                                                 placeholder="hh:mm"
                                                 parse={value =>
