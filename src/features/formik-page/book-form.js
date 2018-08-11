@@ -1,6 +1,7 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import { Field, Form, Formik } from 'formik';
 import { inject, observer } from 'mobx-react';
 import moment from 'moment';
@@ -8,9 +9,9 @@ import 'moment-timezone';
 import * as yup from 'yup';
 import { Book, BookEvent } from '../../stores/book';
 import Checkbox from './components/checkbox';
+import DurationInput from './components/duration-input';
 import Select from './components/select';
 import TextInput from './components/text-input';
-import Typography from "@material-ui/core/Typography";
 import { Tz } from './components/tz';
 
 const styles = theme => ({
@@ -56,7 +57,10 @@ export const BookForm = inject('rootStore')(
 
                     const validationSchema = yup.object().shape({
                         title: yup.string().required(),
-                        copiesPublished: yup.number().integer().positive()
+                        copiesPublished: yup
+                            .number()
+                            .integer()
+                            .positive()
                     });
 
                     return (
@@ -99,17 +103,16 @@ export const BookForm = inject('rootStore')(
                                             component={Checkbox}
                                             label="Published"
                                         />
-                                        {
-                                            // TODO: Think of a better way to edit numbers.
-                                            // Here the generated value ends up being a string.
-                                            values.isPublished &&
+                                        {// TODO: Think of a better way to edit numbers.
+                                        // Here the generated value ends up being a string.
+                                        values.isPublished && (
                                             <Field
                                                 name="copiesPublished"
                                                 component={TextInput}
                                                 label="Copies"
                                                 className={classes.copies}
                                             />
-                                        }
+                                        )}
                                     </div>
                                     <div className={classes.eventExists}>
                                         <Field
@@ -118,35 +121,65 @@ export const BookForm = inject('rootStore')(
                                             label="Create event"
                                         />
                                     </div>
-                                    {
-                                        values.eventExists && (
-                                            <Fragment>
-                                                <Typography variant="title">
-                                                    Event
-                                                </Typography>
+                                    {values.eventExists && (
+                                        <Fragment>
+                                            <Typography variant="title">
+                                                Event
+                                            </Typography>
+                                            <Field
+                                                name="event.name"
+                                                component={TextInput}
+                                                label="Name"
+                                                fullWidth
+                                            />
+                                            <div>
                                                 <Field
-                                                    name="event.name"
+                                                    name="event.city"
                                                     component={TextInput}
-                                                    label="Name"
-                                                    fullWidth
+                                                    label="City"
+                                                    className={
+                                                        classes.textInput
+                                                    }
                                                 />
-                                                <div>
-                                                    <Field
-                                                        name="event.city"
-                                                        component={TextInput}
-                                                        label="City"
-                                                        className={classes.textInput}
-                                                    />
-                                                    <Field
-                                                        name="event.timezone"
-                                                        component={Tz}
-                                                        label="Time Zone"
-                                                        className={classes.textInput}
-                                                    />
-                                                </div>
-                                            </Fragment>
-                                        )
-                                    }
+                                                <Field
+                                                    name="event.timezone"
+                                                    component={Tz}
+                                                    label="Time Zone"
+                                                    className={
+                                                        classes.textInput
+                                                    }
+                                                />
+                                            </div>
+                                            <div>
+                                                <Field
+                                                    name="event.datePart"
+                                                    component={TextInput}
+                                                    label="Start Date"
+                                                    placeholder="YYYY-MM-DD"
+                                                    className={
+                                                        classes.textInput
+                                                    }
+                                                />
+                                                <Field
+                                                    name="event.timePart"
+                                                    component={TextInput}
+                                                    label="Time"
+                                                    placeholder="hh:mm AM"
+                                                    className={
+                                                        classes.textInput
+                                                    }
+                                                />
+                                                <Field
+                                                    name="event.duration"
+                                                    component={DurationInput}
+                                                    label="Duration"
+                                                    className={
+                                                        classes.textInput
+                                                    }
+                                                />
+                                            </div>
+                                        </Fragment>
+                                    )}
 
                                     <div className={classes.buttonBar}>
                                         <Button
@@ -176,12 +209,18 @@ function serialize(book) {
               name: event.name || '',
               city: event.city || '',
               timezone: event.timezone || '',
-              startTime: event.startTime,
               datePart: computeDatePart(event.startTime, event.timezone),
               timePart: computeTimePart(event.startTime, event.timezone),
               duration: event.duration || 0
           }
-        : undefined;
+        : {
+              name: '',
+              city: '',
+              timezone: '',
+              datePart: '',
+              timePart: '',
+              duration: 0
+          };
 
     return {
         id: book.id || '',
@@ -202,7 +241,11 @@ function deserialize(jsBook) {
               jsBook.event.name,
               jsBook.event.city,
               jsBook.event.timezone,
-              jsBook.event.startTime,
+              computeDate(
+                  jsBook.event.datePart,
+                  jsBook.event.timePart,
+                  jsBook.event.timezone
+              ),
               jsBook.event.duration
           )
         : undefined;

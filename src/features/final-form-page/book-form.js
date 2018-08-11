@@ -58,6 +58,18 @@ const Condition = ({ when, is, children }) => (
 
 const calculator = createDecorator(
     {
+        field: 'eventTimezone', // when eventTimezone changes...
+        updates: {
+            // ...update eventStartTime
+            eventStartTime: (eventTimezone, allValues) =>
+                computeDate(
+                    allValues.eventDatePart,
+                    allValues.eventTimePart,
+                    allValues.eventTimezone
+                )
+        }
+    },
+    {
         field: 'eventDatePart', // when eventDatePart changes...
         updates: {
             // ...update eventStartTime
@@ -198,7 +210,8 @@ export const BookForm = inject('rootStore')(
                                                 label="Time Zone Raw"
                                                 onChange={event =>
                                                     this.setState({
-                                                        tzRaw: event.target.value
+                                                        tzRaw:
+                                                            event.target.value
                                                     })
                                                 }
                                             />

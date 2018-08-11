@@ -47,7 +47,7 @@ export class Timezone extends React.Component {
                 value={timezoneStr}
                 suggestions={suggestions}
                 getSuggestionValue={this.getSuggestionValue}
-                onChange={this.handleOnChange}
+                onChange={this.handleChange}
                 onBlur={onChange}
                 onSuggestionsFetchRequested={
                     this.handleSuggestionsFetchRequested
@@ -95,7 +95,7 @@ export class Timezone extends React.Component {
     };
 
     // Don't propagate onChange. Just update local state
-    handleOnChange = (event, { newValue }) => {
+    handleChange = (event, { newValue }) => {
         this.setState({
             timezoneStr: newValue
         });

@@ -3,7 +3,11 @@ import { Timezone } from '../../../components/basics/timezone';
 
 export class Tz extends React.Component {
     render() {
-        const { field, form: { touched, errors }, ...props } = this.props;
+        const {
+            field,
+            form: { touched, errors },
+            ...props
+        } = this.props;
 
         return (
             <Timezone
