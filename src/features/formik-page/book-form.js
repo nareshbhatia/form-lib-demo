@@ -98,14 +98,13 @@ export const BookForm = inject('rootStore')(
                                             label="Published"
                                         />
                                         {
+                                            // TODO: Think of a better way to edit numbers.
+                                            // Here the generated value ends up being a string.
                                             values.isPublished &&
                                             <Field
                                                 name="copiesPublished"
                                                 component={TextInput}
                                                 label="Copies"
-                                                parse={value =>
-                                                    parseInt(value, 10)
-                                                }
                                                 className={classes.copies}
                                             />
                                         }
