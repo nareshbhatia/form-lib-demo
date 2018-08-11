@@ -7,6 +7,7 @@ import moment from 'moment';
 import 'moment-timezone';
 import * as yup from 'yup';
 import { Book, BookEvent } from '../../stores/book';
+import Checkbox from './components/checkbox';
 import Select from './components/select';
 import TextInput from './components/text-input';
 
@@ -89,6 +90,11 @@ export const BookForm = inject('rootStore')(
                                                 publisherMap.values()
                                             )}
                                             className={classes.selectStyle}
+                                        />
+                                        <Field
+                                            name="isPublished"
+                                            component={Checkbox}
+                                            label="Published"
                                         />
                                     </div>
 
