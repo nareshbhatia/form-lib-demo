@@ -196,9 +196,9 @@ export const BookForm = inject('rootStore')(
                                                 name="timezone-raw"
                                                 value={this.state.tzRaw}
                                                 label="Time Zone Raw"
-                                                onChange={value =>
+                                                onChange={event =>
                                                     this.setState({
-                                                        tzRaw: value
+                                                        tzRaw: event.target.value
                                                     })
                                                 }
                                             />

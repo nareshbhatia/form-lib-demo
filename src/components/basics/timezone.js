@@ -41,19 +41,20 @@ export class Timezone extends React.Component {
         const { value, onChange, ...rest } = this.props;
         const { timezoneStr, suggestions } = this.state;
 
+        // Propagate onBlur as onChange
         return (
             <MuiAutosuggest
                 value={timezoneStr}
                 suggestions={suggestions}
                 getSuggestionValue={this.getSuggestionValue}
                 onChange={this.handleOnChange}
+                onBlur={onChange}
                 onSuggestionsFetchRequested={
                     this.handleSuggestionsFetchRequested
                 }
                 onSuggestionsClearRequested={
                     this.handleSuggestionsClearRequested
                 }
-                onBlur={this.onTimezoneChanged}
                 {...rest}
             />
         );
@@ -93,15 +94,10 @@ export class Timezone extends React.Component {
         });
     };
 
+    // Don't propagate onChange. Just update local state
     handleOnChange = (event, { newValue }) => {
         this.setState({
             timezoneStr: newValue
         });
-    };
-
-    onTimezoneChanged = () => {
-        const { onChange } = this.props;
-        const { timezoneStr } = this.state;
-        onChange(timezoneStr);
     };
 }

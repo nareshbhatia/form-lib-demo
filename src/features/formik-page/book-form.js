@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { Field, Form, Formik } from 'formik';
@@ -10,6 +10,8 @@ import { Book, BookEvent } from '../../stores/book';
 import Checkbox from './components/checkbox';
 import Select from './components/select';
 import TextInput from './components/text-input';
+import Typography from "@material-ui/core/Typography";
+import { Tz } from './components/tz';
 
 const styles = theme => ({
     root: {
@@ -109,6 +111,42 @@ export const BookForm = inject('rootStore')(
                                             />
                                         }
                                     </div>
+                                    <div className={classes.eventExists}>
+                                        <Field
+                                            name="eventExists"
+                                            component={Checkbox}
+                                            label="Create event"
+                                        />
+                                    </div>
+                                    {
+                                        values.eventExists && (
+                                            <Fragment>
+                                                <Typography variant="title">
+                                                    Event
+                                                </Typography>
+                                                <Field
+                                                    name="event.name"
+                                                    component={TextInput}
+                                                    label="Name"
+                                                    fullWidth
+                                                />
+                                                <div>
+                                                    <Field
+                                                        name="event.city"
+                                                        component={TextInput}
+                                                        label="City"
+                                                        className={classes.textInput}
+                                                    />
+                                                    <Field
+                                                        name="event.timezone"
+                                                        component={Tz}
+                                                        label="Time Zone"
+                                                        className={classes.textInput}
+                                                    />
+                                                </div>
+                                            </Fragment>
+                                        )
+                                    }
 
                                     <div className={classes.buttonBar}>
                                         <Button
