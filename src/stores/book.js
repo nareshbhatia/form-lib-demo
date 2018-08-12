@@ -109,7 +109,7 @@ export class Book {
         title,
         subtitle,
         publisherId,
-        authorIds,
+        authorIds = [],
         isPublished,
         copiesPublished,
         bookEvent

@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import { Book, BookEvent } from '../../stores/book';
 import Checkbox from './components/checkbox';
 import DurationInput from './components/duration-input';
+import MultiSelect from './components/multi-select';
 import Select from './components/select';
 import TextInput from './components/text-input';
 import TransformInput from './components/transform-input';
@@ -52,9 +53,12 @@ export const BookForm = inject('rootStore')(
                         rootStore: { bookStore }
                     } = this.props;
 
-                    const jsBook = serialize(bookStore.editedBook);
+                    const { authorMap, publisherMap } = bookStore;
 
-                    const { publisherMap } = bookStore;
+                    const jsBook = this.serialize(
+                        bookStore.editedBook,
+                        authorMap
+                    );
 
                     const validationSchema = yup.object().shape({
                         title: yup.string().required(),
@@ -70,7 +74,7 @@ export const BookForm = inject('rootStore')(
                             enableReinitialize={true}
                             validationSchema={validationSchema}
                             onSubmit={(values, { setSubmitting }) => {
-                                const book = deserialize(values);
+                                const book = this.deserialize(values);
                                 bookStore.setBook(book);
                                 bookStore.selectBook(book);
                                 setSubmitting(false);
@@ -123,6 +127,18 @@ export const BookForm = inject('rootStore')(
                                             />
                                         )}
                                     </div>
+                                    <Field
+                                        name="authors"
+                                        component={MultiSelect}
+                                        label="Authors"
+                                        options={Array.from(
+                                            authorMap.values()
+                                        ).map(author => ({
+                                            label: author.name,
+                                            value: author.id
+                                        }))}
+                                        className={classes.selectStyle}
+                                    />
                                     <div className={classes.eventExists}>
                                         <Field
                                             name="eventExists"
@@ -205,70 +221,81 @@ export const BookForm = inject('rootStore')(
                         />
                     );
                 }
+
+                serialize(book, authorMap) {
+                    const event = book.bookEvent;
+                    const eventExists = !!event;
+                    const jsEvent = eventExists
+                        ? {
+                              name: event.name || '',
+                              city: event.city || '',
+                              timezone: event.timezone || '',
+                              datePart: computeDatePart(
+                                  event.startTime,
+                                  event.timezone
+                              ),
+                              timePart: computeTimePart(
+                                  event.startTime,
+                                  event.timezone
+                              ),
+                              duration: event.duration || 0
+                          }
+                        : {
+                              name: '',
+                              city: '',
+                              timezone: '',
+                              datePart: '',
+                              timePart: '',
+                              duration: 0
+                          };
+
+                    return {
+                        id: book.id || '',
+                        title: book.title || '',
+                        subtitle: book.subtitle || '',
+                        publisherId: book.publisherId || '',
+                        authors: book.authorIds
+                            ? book.authorIds.map(authorId => ({
+                                  label: authorMap.get(authorId).name,
+                                  value: authorId
+                              }))
+                            : [],
+                        isPublished: book.isPublished || false,
+                        copiesPublished: book.copiesPublished || 0,
+                        eventExists: eventExists,
+                        event: jsEvent
+                    };
+                }
+
+                deserialize(jsBook) {
+                    const bookEvent = jsBook.eventExists
+                        ? new BookEvent(
+                              jsBook.event.name,
+                              jsBook.event.city,
+                              jsBook.event.timezone,
+                              computeDate(
+                                  jsBook.event.datePart,
+                                  jsBook.event.timePart,
+                                  jsBook.event.timezone
+                              ),
+                              jsBook.event.duration
+                          )
+                        : undefined;
+                    return new Book(
+                        jsBook.id,
+                        jsBook.title,
+                        jsBook.subtitle,
+                        jsBook.publisherId,
+                        jsBook.authors.map(author => author.value),
+                        jsBook.isPublished,
+                        jsBook.copiesPublished,
+                        bookEvent
+                    );
+                }
             }
         )
     )
 );
-
-function serialize(book) {
-    const event = book.bookEvent;
-    const eventExists = !!event;
-    const jsEvent = eventExists
-        ? {
-              name: event.name || '',
-              city: event.city || '',
-              timezone: event.timezone || '',
-              datePart: computeDatePart(event.startTime, event.timezone),
-              timePart: computeTimePart(event.startTime, event.timezone),
-              duration: event.duration || 0
-          }
-        : {
-              name: '',
-              city: '',
-              timezone: '',
-              datePart: '',
-              timePart: '',
-              duration: 0
-          };
-
-    return {
-        id: book.id || '',
-        title: book.title || '',
-        subtitle: book.subtitle || '',
-        publisherId: book.publisherId || '',
-        authorIds: book.authorIds ? book.authorIds.slice() : [],
-        isPublished: book.isPublished || false,
-        copiesPublished: book.copiesPublished || 0,
-        eventExists: eventExists,
-        event: jsEvent
-    };
-}
-
-function deserialize(jsBook) {
-    const bookEvent = jsBook.eventExists
-        ? new BookEvent(
-              jsBook.event.name,
-              jsBook.event.city,
-              jsBook.event.timezone,
-              computeDate(
-                  jsBook.event.datePart,
-                  jsBook.event.timePart,
-                  jsBook.event.timezone
-              ),
-              jsBook.event.duration
-          )
-        : undefined;
-    return new Book(
-        jsBook.id,
-        jsBook.title,
-        jsBook.subtitle,
-        jsBook.publisherId,
-        jsBook.authorIds,
-        jsBook.isPublished,
-        jsBook.copiesPublished,
-        bookEvent
-    );
-}
 
 function computeDatePart(date, timezone) {
     if (!date) {
