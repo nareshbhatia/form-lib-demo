@@ -12,6 +12,7 @@ import { DateTimeUtils } from '../../utils/datetime-utils';
 import { Tz } from './components/tz';
 import { Timezone } from '../../components/basics/timezone';
 import Checkbox from './components/checkbox';
+import DurationInput from './components/duration-input';
 import MultiSelect from './components/multi-select';
 import Select from './components/select';
 import TextField from './components/text-field';
@@ -168,6 +169,7 @@ export const BookForm = inject('rootStore')(
                                                 parse={value =>
                                                     parseInt(value, 10)
                                                 }
+                                                format={value => value ? Number(value) : ''}
                                                 className={classes.copies}
                                             />
                                         </Condition>
@@ -257,21 +259,11 @@ export const BookForm = inject('rootStore')(
                                             />
                                             <Field
                                                 name="eventDuration"
-                                                component={TextField}
-                                                type="text"
+                                                component={DurationInput}
                                                 label="Duration"
-                                                placeholder="hh:mm"
-                                                parse={value =>
-                                                    DateTimeUtils.durationStrToMillis(
-                                                        value
-                                                    )
+                                                className={
+                                                    classes.textInput
                                                 }
-                                                format={value =>
-                                                    DateTimeUtils.millisToDurationStr(
-                                                        value
-                                                    )
-                                                }
-                                                className={classes.textInput}
                                             />
                                         </div>
                                     </Condition>
