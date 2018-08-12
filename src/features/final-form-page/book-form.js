@@ -12,6 +12,7 @@ import { DateTimeUtils } from '../../utils/datetime-utils';
 import { Tz } from './components/tz';
 import { Timezone } from '../../components/basics/timezone';
 import Checkbox from './components/checkbox';
+import MultiSelect from './components/multi-select';
 import Select from './components/select';
 import TextField from './components/text-field';
 
@@ -109,11 +110,12 @@ export const BookForm = inject('rootStore')(
                         rootStore: { bookStore }
                     } = this.props;
 
-                    const jsBook = bookStore.editedBook
-                        ? serialize(bookStore.editedBook)
-                        : {};
+                    const { authorMap, publisherMap } = bookStore;
 
-                    const { publisherMap } = bookStore;
+                    const jsBook = this.serialize(
+                        bookStore.editedBook,
+                        authorMap
+                    );
 
                     return (
                         <Form
@@ -170,6 +172,17 @@ export const BookForm = inject('rootStore')(
                                             />
                                         </Condition>
                                     </div>
+                                    <Field
+                                        name="authors"
+                                        component={MultiSelect}
+                                        label="Authors"
+                                        options={Array.from(
+                                            authorMap.values()
+                                        ).map(author => ({
+                                            label: author.name,
+                                            value: author.id
+                                        }))}
+                                    />
                                     <div className={classes.eventExists}>
                                         <Field
                                             name="eventExists"
@@ -283,67 +296,72 @@ export const BookForm = inject('rootStore')(
                     const {
                         rootStore: { bookStore }
                     } = this.props;
-                    const book = deserialize(values);
+                    const book = this.deserialize(values);
                     bookStore.setBook(book);
                     bookStore.selectBook(book);
                 };
+
+                serialize(book, authorMap) {
+                    const event = book.bookEvent;
+                    const eventExists = !!event;
+                    const eventTimezone = eventExists ? event.timezone : undefined;
+                    const eventStartTime = eventExists
+                        ? new Date(event.startTime.getTime())
+                        : undefined;
+
+                    return {
+                        id: book.id,
+                        title: book.title,
+                        subtitle: book.subtitle,
+                        publisherId: book.publisherId,
+                        authors: book.authorIds
+                            ? book.authorIds.map(authorId => ({
+                                label: authorMap.get(authorId).name,
+                                value: authorId
+                            }))
+                            : [],
+                        isPublished: book.isPublished,
+                        copiesPublished: book.copiesPublished,
+                        eventExists: eventExists,
+                        eventName: eventExists ? event.name : undefined,
+                        eventCity: eventExists ? event.city : undefined,
+                        eventTimezone: eventTimezone,
+                        eventStartTime: eventStartTime,
+                        eventDatePart: eventExists
+                            ? computeDatePart(eventStartTime, eventTimezone)
+                            : undefined,
+                        eventTimePart: eventExists
+                            ? computeTimePart(eventStartTime, eventTimezone)
+                            : undefined,
+                        eventDuration: eventExists ? event.duration : undefined
+                    };
+                }
+
+                deserialize(jsBook) {
+                    const bookEvent = jsBook.eventExists
+                        ? new BookEvent(
+                            jsBook.eventName,
+                            jsBook.eventCity,
+                            jsBook.eventTimezone,
+                            jsBook.eventStartTime,
+                            jsBook.eventDuration
+                        )
+                        : undefined;
+                    return new Book(
+                        jsBook.id,
+                        jsBook.title,
+                        jsBook.subtitle,
+                        jsBook.publisherId,
+                        jsBook.authors.map(author => author.value),
+                        jsBook.isPublished,
+                        jsBook.copiesPublished,
+                        bookEvent
+                    );
+                }
             }
         )
     )
 );
-
-function serialize(book) {
-    const event = book.bookEvent;
-    const eventExists = !!event;
-    const eventTimezone = eventExists ? event.timezone : undefined;
-    const eventStartTime = eventExists
-        ? new Date(event.startTime.getTime())
-        : undefined;
-
-    return {
-        id: book.id,
-        title: book.title,
-        subtitle: book.subtitle,
-        publisherId: book.publisherId,
-        authorIds: book.authorIds ? book.authorIds.slice() : undefined,
-        isPublished: book.isPublished,
-        copiesPublished: book.copiesPublished,
-        eventExists: eventExists,
-        eventName: eventExists ? event.name : undefined,
-        eventCity: eventExists ? event.city : undefined,
-        eventTimezone: eventTimezone,
-        eventStartTime: eventStartTime,
-        eventDatePart: eventExists
-            ? computeDatePart(eventStartTime, eventTimezone)
-            : undefined,
-        eventTimePart: eventExists
-            ? computeTimePart(eventStartTime, eventTimezone)
-            : undefined,
-        eventDuration: eventExists ? event.duration : undefined
-    };
-}
-
-function deserialize(jsBook) {
-    const bookEvent = jsBook.eventExists
-        ? new BookEvent(
-              jsBook.eventName,
-              jsBook.eventCity,
-              jsBook.eventTimezone,
-              jsBook.eventStartTime,
-              jsBook.eventDuration
-          )
-        : undefined;
-    return new Book(
-        jsBook.id,
-        jsBook.title,
-        jsBook.subtitle,
-        jsBook.publisherId,
-        jsBook.authorIds,
-        jsBook.isPublished,
-        jsBook.copiesPublished,
-        bookEvent
-    );
-}
 
 function computeDatePart(date, timezone) {
     if (!date) {

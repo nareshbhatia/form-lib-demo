@@ -137,7 +137,6 @@ export const BookForm = inject('rootStore')(
                                             label: author.name,
                                             value: author.id
                                         }))}
-                                        className={classes.selectStyle}
                                     />
                                     <div className={classes.eventExists}>
                                         <Field
