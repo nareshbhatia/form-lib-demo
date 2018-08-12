@@ -7,5 +7,6 @@
 export const routes = [
     { name: 'finalForm', pattern: '/' },
     { name: 'formik', pattern: '/formik' },
+    { name: 'custom', pattern: '/custom' },
     { name: 'notFound', pattern: '/not-found' }
 ];

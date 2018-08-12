@@ -31,6 +31,7 @@ export const NavBar = inject('rootStore')(
                             <Tabs value={tab} onChange={this.onTabChange}>
                                 <Tab label="Final Form" />
                                 <Tab label="Formik" />
+                                <Tab label="Custom Form" />
                             </Tabs>
                         </div>
                     );
@@ -44,13 +45,14 @@ export const NavBar = inject('rootStore')(
                 routeToTab(route) {
                     const map = {
                         finalForm: 0,
-                        formik: 1
+                        formik: 1,
+                        custom: 2
                     };
                     return map[route];
                 }
 
                 tab2route(tab) {
-                    const routes = ['finalForm', 'formik'];
+                    const routes = ['finalForm', 'formik', 'custom'];
                     return routes[tab];
                 }
             }
