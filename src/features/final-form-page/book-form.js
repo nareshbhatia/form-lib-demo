@@ -8,7 +8,6 @@ import moment from 'moment';
 import 'moment-timezone';
 import { Form, Field } from 'react-final-form';
 import { Book, BookEvent } from '../../stores/book';
-import { DateTimeUtils } from '../../utils/datetime-utils';
 import { Tz } from './components/tz';
 import { Timezone } from '../../components/basics/timezone';
 import Checkbox from './components/checkbox';
@@ -169,7 +168,9 @@ export const BookForm = inject('rootStore')(
                                                 parse={value =>
                                                     parseInt(value, 10)
                                                 }
-                                                format={value => value ? Number(value) : ''}
+                                                format={value =>
+                                                    value ? Number(value) : ''
+                                                }
                                                 className={classes.copies}
                                             />
                                         </Condition>
@@ -261,9 +262,7 @@ export const BookForm = inject('rootStore')(
                                                 name="eventDuration"
                                                 component={DurationInput}
                                                 label="Duration"
-                                                className={
-                                                    classes.textInput
-                                                }
+                                                className={classes.textInput}
                                             />
                                         </div>
                                     </Condition>
@@ -296,7 +295,9 @@ export const BookForm = inject('rootStore')(
                 serialize(book, authorMap) {
                     const event = book.bookEvent;
                     const eventExists = !!event;
-                    const eventTimezone = eventExists ? event.timezone : undefined;
+                    const eventTimezone = eventExists
+                        ? event.timezone
+                        : undefined;
                     const eventStartTime = eventExists
                         ? new Date(event.startTime.getTime())
                         : undefined;
@@ -308,9 +309,9 @@ export const BookForm = inject('rootStore')(
                         publisherId: book.publisherId,
                         authors: book.authorIds
                             ? book.authorIds.map(authorId => ({
-                                label: authorMap.get(authorId).name,
-                                value: authorId
-                            }))
+                                  label: authorMap.get(authorId).name,
+                                  value: authorId
+                              }))
                             : [],
                         isPublished: book.isPublished,
                         copiesPublished: book.copiesPublished,
@@ -332,12 +333,12 @@ export const BookForm = inject('rootStore')(
                 deserialize(jsBook) {
                     const bookEvent = jsBook.eventExists
                         ? new BookEvent(
-                            jsBook.eventName,
-                            jsBook.eventCity,
-                            jsBook.eventTimezone,
-                            jsBook.eventStartTime,
-                            jsBook.eventDuration
-                        )
+                              jsBook.eventName,
+                              jsBook.eventCity,
+                              jsBook.eventTimezone,
+                              jsBook.eventStartTime,
+                              jsBook.eventDuration
+                          )
                         : undefined;
                     return new Book(
                         jsBook.id,

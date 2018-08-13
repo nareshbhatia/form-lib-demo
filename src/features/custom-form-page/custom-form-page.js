@@ -10,6 +10,7 @@ import {
     ScrollingContainer,
     VerticalDivider
 } from '../../components';
+import { BookForm } from './book-form';
 
 const styles = {
     master: {
@@ -45,6 +46,7 @@ export const CustomFormPage = inject('rootStore')(
                                 <VerticalDivider />
                                 <ScrollingContainer>
                                     <BookView />
+                                    <BookForm />
                                 </ScrollingContainer>
                             </FullHeightHorizontalContainer>
                         </PageLayout>

@@ -179,7 +179,13 @@ class MultiSelect extends React.Component {
     };
 
     render() {
-        const { classes, theme, input: { name, onChange, value }, label, options } = this.props;
+        const {
+            classes,
+            theme,
+            input: { name, onChange, value },
+            label,
+            options
+        } = this.props;
 
         const selectStyles = {
             input: base => ({

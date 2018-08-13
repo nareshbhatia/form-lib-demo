@@ -21,7 +21,7 @@ export class BookStore {
     @action
     selectBook(book) {
         this.selectedBook = book;
-        this.editedBook = book;
+        this.editedBook = book.clone();
     }
 
     @action

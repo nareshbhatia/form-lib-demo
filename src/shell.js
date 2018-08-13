@@ -2,7 +2,12 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { inject } from 'mobx-react';
 import { RouterView } from 'mobx-state-router';
-import { CustomFormPage, FinalFormPage, FormikPage, NotFoundPage } from './features';
+import {
+    CustomFormPage,
+    FinalFormPage,
+    FormikPage,
+    NotFoundPage
+} from './features';
 
 const styles = theme => ({
     '@global': {
