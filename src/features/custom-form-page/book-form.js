@@ -2,7 +2,6 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import { inject, observer } from 'mobx-react';
 import { Field } from './components/field';
-import { FormWrapper } from './components/form-wrapper';
 import { TextInput } from './components/text-input';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -43,33 +42,43 @@ export const BookForm = inject('rootStore')(
                         rootStore: { bookStore }
                     } = this.props;
 
-                    return (
-                        <FormWrapper
-                            entity={bookStore.editedBook}
-                            render={({ entity }) => (
-                                <form>
-                                    <Field
-                                        entity={entity}
-                                        attr="title"
-                                        component={TextInput}
-                                        label="Title"
-                                        fullWidth
-                                    />
+                    const entity = bookStore.editedBook;
 
-                                    <div className={classes.buttonBar}>
-                                        <Button
-                                            variant="raised"
-                                            color="primary"
-                                            type="submit"
-                                        >
-                                            Submit
-                                        </Button>
-                                    </div>
-                                </form>
-                            )}
-                        />
+                    return (
+                        <form onSubmit={this.handleSubmit}>
+                            <Field
+                                entity={entity}
+                                attr="title"
+                                component={TextInput}
+                                label="Title"
+                                fullWidth
+                            />
+
+                            <div className={classes.buttonBar}>
+                                <Button
+                                    variant="raised"
+                                    color="primary"
+                                    type="submit"
+                                >
+                                    Submit
+                                </Button>
+                            </div>
+                        </form>
                     );
                 }
+
+                handleSubmit = event => {
+                    event.stopPropagation();
+                    event.preventDefault();
+
+                    const {
+                        rootStore: { bookStore }
+                    } = this.props;
+
+                    const book = bookStore.editedBook;
+                    bookStore.setBook(book);
+                    bookStore.selectBook(book);
+                };
             }
         )
     )
