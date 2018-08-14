@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { Field } from './components/field';
 import { TextInput } from './components/text-input';
 import { withStyles } from '@material-ui/core/styles';
+import * as yup from 'yup';
 
 const styles = theme => ({
     root: {
@@ -32,6 +33,15 @@ const styles = theme => ({
 
 const decorate = withStyles(styles);
 
+const validationSchema = yup.object().shape({
+    title: yup.string().required(),
+    subtitle: yup.string().required(),
+    copiesPublished: yup
+        .number()
+        .integer()
+        .positive()
+});
+
 export const BookForm = inject('rootStore')(
     decorate(
         observer(
@@ -50,7 +60,16 @@ export const BookForm = inject('rootStore')(
                                 entity={entity}
                                 attr="title"
                                 component={TextInput}
+                                validationSchema={validationSchema}
                                 label="Title"
+                                fullWidth
+                            />
+                            <Field
+                                entity={entity}
+                                attr="subtitle"
+                                component={TextInput}
+                                validationSchema={validationSchema}
+                                label="Subtitle"
                                 fullWidth
                             />
 
@@ -76,6 +95,15 @@ export const BookForm = inject('rootStore')(
                     } = this.props;
 
                     const book = bookStore.editedBook;
+                    validationSchema
+                        .validate(book, {abortEarly: false})
+                        .then(valid => {
+                            console.log('Schema is valid:', valid);
+                        })
+                        .catch(err => {
+                            console.log('Schema is invalid:', err);
+                        });
+
                     bookStore.setBook(book);
                     bookStore.selectBook(book);
                 };
